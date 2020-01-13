@@ -109,6 +109,8 @@ def calculate_clusters(input_locations,
             raise Exception('Optimal solution to the allocation model does not exist')
 
     all_clusters = pd.concat(all_clusters)
+    all_clusters['NUMBER_OF_CLUSTERS'] = number_of_clusters
     all_stores_with_clusters = pd.concat(all_stores_with_clusters)
+    all_stores_with_clusters['NUMBER_OF_CLUSTERS'] = number_of_clusters
 
     return all_clusters, all_stores_with_clusters
