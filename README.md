@@ -1,4 +1,4 @@
-**Weighted KMeans Clustering for Geolocational Problem*
+**Weighted KMeans Clustering for Geolocational Problem**
 =================
 
 
