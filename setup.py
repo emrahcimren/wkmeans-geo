@@ -1,6 +1,10 @@
 import pathlib
 from setuptools import setup
 
+from pip.req import parse_requirements
+install_reqs = parse_requirements('requirements.txt')
+reqs = [str(ir.req) for ir in install_reqs]
+
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
 
@@ -23,9 +27,9 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
-    #packages=["wkmeans-geo"],
+    packages=["wkmeans-geo"],
     include_package_data=True,
-    install_requires=["Pathlib", "numpy"],
+    install_requires=reqs,
     #entry_points={
     #    "console_scripts": [
     #        "realpython=reader.__main__:main",

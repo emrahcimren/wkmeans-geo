@@ -19,7 +19,8 @@ def calculate_clusters(input_locations,
                        minimum_elements_in_a_cluster,
                        maximum_elements_in_a_cluster,
                        maximum_iteration,
-                       objective_range):
+                       objective_range,
+                       previous_objective=None):
 
     iteration = 0
     all_clusters = []
@@ -33,6 +34,9 @@ def calculate_clusters(input_locations,
 
     prev_objective, prev_clusters, prev_locations_with_clusters = \
         init.initiate_algorithm(iteration, locations_with_clusters)
+
+    if previous_objective is not None:
+        prev_objective = previous_objective
 
     all_clusters.append(prev_clusters)
     all_stores_with_clusters.append(prev_locations_with_clusters)
@@ -51,59 +55,60 @@ def calculate_clusters(input_locations,
 
         if len(solution) > 0:
 
-            logging.info('Optimal solution is found')
-            logging.info(solution)
+            print('Optimal solution is found')
+            print(solution)
 
             iteration = iteration + 1
             solution['ITERATION'] = iteration
             objective = round(solution['WEIGHTED_DISTANCE'].sum(), 2)
             solution['OBJECTIVE'] = objective
 
-            stores_with_clusters = stores.copy().merge(solution, how='left', on=['STORE_NAME'])
+            locations_with_clusters = input_locations.copy().merge(solution, how='left', on=['LOCATION_NAME'])
 
-            logging.info('Stores')
-            logging.info(stores_with_clusters)
+            print('Stores')
+            print(locations_with_clusters)
 
-            logging.info('Clusters')
-            logging.info(cluster_locations)
-
-            cluster_locations = calculate_cluster_centers(stores_with_clusters, cluster_locations)
+            print('Clusters')
+            cluster_locations = cl.calculate_cluster_centers(locations_with_clusters)
             cluster_locations['ITERATION'] = iteration
 
-            logging.info('Merging results with clusters')
-            stores_with_clusters = stores_with_clusters.merge(cluster_locations, how='left', on=['CLUSTER'])
-            stores_with_clusters['ITERATION'] = iteration
-            stores_with_clusters['SOLUTION'] = 0
+            print('Merging results with clusters')
+            locations_with_clusters = locations_with_clusters.merge(cluster_locations, how='left', on=['CLUSTER'])
+            locations_with_clusters['ITERATION'] = iteration
+            locations_with_clusters['SOLUTION'] = 0
 
-            stores_with_clusters = stores_with_clusters[
-                ['STORE_NAME', 'LATITUDE', 'LONGITUDE', 'DEMAND',
-                 'CLUSTER', 'CLUSTER_NAME', 'CLUSTER_LATITUDE', 'CLUSTER_LONGITUDE',
+            locations_with_clusters = locations_with_clusters[
+                ['LOCATION_NAME', 'LATITUDE', 'LONGITUDE', 'WEIGHT',
+                 'CLUSTER', 'CLUSTER_LATITUDE', 'CLUSTER_LONGITUDE',
                  'DISTANCE', 'WEIGHTED_DISTANCE', 'ITERATION',
                  'OBJECTIVE', 'SOLUTION']]
 
-            logging.info('Current objective {}'.format(str(objective)))
-            logging.info('Prev objective {}'.format(str(prev_objective)))
+            print('Current objective {}'.format(str(objective)))
+            print('Prev objective {}'.format(str(prev_objective)))
 
             if abs(objective - prev_objective) < objective_range:
-                logging.info('Solution found')
+                print('Solution found')
                 solution_not_found = False
-                prev_stores_with_clusters['SOLUTION'] = 1
+                prev_locations_with_clusters['SOLUTION'] = 1
 
-            elif (prev_objective < objective) and iteration > max_iteration:
-                logging.info('Stopping')
+            elif (prev_objective < objective) and iteration > maximum_iteration:
+                print('Stopping')
                 solution_not_found = False
-                prev_stores_with_clusters['SOLUTION'] = 1
+                prev_locations_with_clusters['SOLUTION'] = 1
 
             else:
                 prev_objective = objective
                 prev_clusters = cluster_locations
-                prev_stores_with_clusters = stores_with_clusters
+                prev_locations_with_clusters = locations_with_clusters
 
                 all_clusters.append(prev_clusters)
-                all_stores_with_clusters.append(prev_stores_with_clusters)
+                all_stores_with_clusters.append(prev_locations_with_clusters)
 
         else:
 
             raise Exception('Optimal solution to the allocation model does not exist')
 
-    return pd.concat(all_clusters), pd.concat(all_stores_with_clusters)
+    all_clusters = pd.concat(all_clusters)
+    all_stores_with_clusters = pd.concat(all_stores_with_clusters)
+
+    return all_clusters, all_stores_with_clusters

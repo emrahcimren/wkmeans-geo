@@ -108,7 +108,7 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
         solution = solution[['CLUSTER', 'LOCATION_NAME', 'DISTANCE', 'WEIGHTED_DISTANCE']]
 
     else:
-
+        print('No solution is found')
         solution = pd.DataFrame()
 
     return solution
