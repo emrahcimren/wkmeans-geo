@@ -14,7 +14,12 @@ How to use
 ----------
 
 ```
-from cimren-wkmeans-geo import clustering
+from wkmeans_geo import wkmeans_clustering as wkc
 
-file_list = files.get_all_files_in_directory('.')
+clusters, locations_with_clusters = wkc.get_all_files_in_directory(input_locations,
+                                                                   number_of_clusters,
+                                                                   minimum_elements_in_a_cluster,
+                                                                   maximum_elements_in_a_cluster,
+                                                                   maximum_iteration,
+                                                                   objective_range)
 ```
