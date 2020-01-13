@@ -1,0 +1,114 @@
+'''
+Formulate and solve depot-store allocation model
+'''
+
+import pandas as pd
+import collections
+from ortools.linear_solver import pywraplp
+
+
+def prepare_model_inputs(location_cluster_distance_matrix):
+
+    print('Getting model inputs')
+
+    DistanceInputs = collections.namedtuple('DistanceInputs', ['DISTANCE', 'WEIGHTED_DISTANCE'])
+    distance = {}
+    for row in location_cluster_distance_matrix.itertuples():
+        distance[row.CLUSTER, row.LOCATION_NAME] = (DistanceInputs(
+            DISTANCE=row.DISTANCE,
+            WEIGHTED_DISTANCE=row.WEIGHTED_DISTANCE))
+
+    location_list = []
+    cluster_list = []
+    for cluster, store in distance.keys():
+        cluster_list.append(cluster)
+        location_list.append(store)
+    location_list = list(dict.fromkeys(location_list))
+    cluster_list = list(dict.fromkeys(cluster_list))
+
+    return location_list, cluster_list, distance
+
+
+def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
+                                      minimum_elements_in_a_cluster,
+                                      maximum_elements_in_a_cluster,
+                                      enable_minimum_maximum_elements_in_a_cluster):
+
+    print('Formulating the optimization model')
+
+    # formulate model
+    solver = pywraplp.Solver('SolveIntegerProblem', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+
+    # create variables #
+    print('create variables')
+    y = {}
+    for cluster, store in distance.keys():
+        y[cluster, store] = solver.BoolVar('y[cluster = {}, {}]'.format(str(cluster), store))
+
+    # Add constraints
+    print('each store is assigned to one cluster')
+    # each store is assigned to one cluster
+    for store in store_list:
+        solver.Add(solver.Sum([y[cluster, store] for cluster in cluster_list]) == 1)
+
+    if enable_minimum_maximum_elements_in_a_cluster:
+
+        print('minimum number of elements in a cluster')
+
+        # minimum number of elements in a cluster
+        for cluster in cluster_list:
+            solver.Add(solver.Sum([y[cluster, store] for store in store_list]) >= minimum_elements_in_a_cluster)
+
+        print('maximum number of elements in a cluster')
+
+        # maximum number of elements in a cluster
+        for cluster in cluster_list:
+            solver.Add(solver.Sum([y[cluster, store] for store in store_list]) <= maximum_elements_in_a_cluster)
+    else:
+
+        print('minimum number of elements in a cluster >= 1')
+
+        # minimum number of elements in a cluster
+        for cluster in cluster_list:
+            solver.Add(solver.Sum([y[cluster, store] for store in store_list]) >= 1)
+
+    # add objective
+    print('Adding objective')
+    solver.Minimize(solver.Sum(
+        [distance[cluster, store].WEIGHTED_DISTANCE * y[cluster, store] for cluster, store in
+         distance.keys()]))
+
+    # solver.Minimize(1)
+    solver_parameters = pywraplp.MPSolverParameters()
+    solver_parameters.SetDoubleParam(pywraplp.MPSolverParameters.RELATIVE_MIP_GAP, 0.01)
+    # solver.SetTimeLimit(self.solver_time_limit)
+
+    solver.EnableOutput()
+
+    print('Solving model')
+    solution = solver.Solve()
+
+    # get solution
+    if solution == pywraplp.Solver.OPTIMAL:
+        print('Problem solved in {} milliseconds'.format(str(solver.WallTime())))
+        print('Problem solved in {} iterations'.format(str(solver.Iterations())))
+
+        solution_final = []
+        print('Getting solutions')
+        for cluster, store in distance.keys():
+            solution_final.append({'CLUSTER': cluster,
+                                   'LOCATION_NAME': store,
+                                   'VALUE': y[cluster, store].solution_value(),
+                                   'DISTANCE': distance[cluster, store].DISTANCE,
+                                   'WEIGHTED_DISTANCE': distance[cluster, store].WEIGHTED_DISTANCE})
+
+        solution = pd.DataFrame(solution_final)
+
+        solution = solution[solution['VALUE'] == 1]
+        solution = solution[['CLUSTER', 'LOCATION_NAME', 'DISTANCE', 'WEIGHTED_DISTANCE']]
+
+    else:
+
+        solution = pd.DataFrame()
+
+    return solution
