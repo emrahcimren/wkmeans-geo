@@ -3,7 +3,9 @@
 
 Repo for weighted k means clustering for specifically geo locational problems. 
 
-For an example: https://emrahcimren.github.io/data%20science/Greenfield-Analysis-with-Weighted-Clustering/
+For an example and mathematical explanation:
+
+https://emrahcimren.github.io/data%20science/Greenfield-Analysis-with-Weighted-Clustering/
 
 Prerequisites
 -------------
