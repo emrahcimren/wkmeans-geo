@@ -35,9 +35,10 @@ setup(
     license="MIT",
     classifiers=[
         "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
-    packages=["wkmeans-geo"],
+    packages=["wkmeans_geo"],
     include_package_data=True,
     install_requires=reqs,
     #entry_points={
