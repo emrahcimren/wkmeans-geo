@@ -1,6 +1,8 @@
 **Weighted KMeans Clustering for Geolocational Problem**
 =================
 
+Repo for weighted k means clustering for specifically geo locational problems. 
+
 Prerequisites
 -------------
 
@@ -35,10 +37,11 @@ How to use
 ```
 from wkmeans_geo import wkmeans_clustering as wkc
 
-clusters, locations_with_clusters = wkc.get_all_files_in_directory(input_locations,
+clusters, locations_with_clusters = wkc.calculate_clusters(input_locations,
                                                                    number_of_clusters,
                                                                    minimum_elements_in_a_cluster,
                                                                    maximum_elements_in_a_cluster,
                                                                    maximum_iteration,
+                                                                   enable_minimum_maximum_elements_in_a_cluster,
                                                                    objective_range)
 ```
