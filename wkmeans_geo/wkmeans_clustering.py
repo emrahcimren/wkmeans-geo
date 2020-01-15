@@ -12,6 +12,18 @@ def calculate_clusters(input_locations,
                        objective_range,
                        enable_minimum_maximum_elements_in_a_cluster,
                        previous_objective=None):
+    '''
+    Run WKmens clustering
+    :param input_locations:
+    :param number_of_clusters:
+    :param minimum_elements_in_a_cluster:
+    :param maximum_elements_in_a_cluster:
+    :param maximum_iteration:
+    :param objective_range:
+    :param enable_minimum_maximum_elements_in_a_cluster:
+    :param previous_objective:
+    :return:
+    '''
 
     iteration = 0
     all_clusters = []
@@ -34,7 +46,7 @@ def calculate_clusters(input_locations,
 
     solution_not_found = True
     while solution_not_found:
-        print('Running iteration {}'.format(str(iteration)))
+        #'Running iteration {}'.format(str(iteration)
 
         location_cluster_distance_matrix = cl.calculate_distance_matrix(input_locations.copy(), prev_clusters)
 
@@ -46,8 +58,7 @@ def calculate_clusters(input_locations,
 
         if len(solution) > 0:
 
-            print('Optimal solution is found')
-            print(solution)
+            #Optimal solution is found'
 
             iteration = iteration + 1
             solution['ITERATION'] = iteration
@@ -56,14 +67,11 @@ def calculate_clusters(input_locations,
 
             locations_with_clusters = input_locations.copy().merge(solution, how='left', on=['LOCATION_NAME'])
 
-            print('Stores')
-            print(locations_with_clusters)
-
-            print('Clusters')
+            #Clusters
             cluster_locations = cl.calculate_cluster_centers(locations_with_clusters)
             cluster_locations['ITERATION'] = iteration
 
-            print('Merging results with clusters')
+            #Merging results with clusters
             locations_with_clusters = locations_with_clusters.merge(cluster_locations, how='left', on=['CLUSTER'])
             locations_with_clusters['ITERATION'] = iteration
             locations_with_clusters['SOLUTION'] = 0
@@ -74,16 +82,16 @@ def calculate_clusters(input_locations,
                  'DISTANCE', 'WEIGHTED_DISTANCE', 'ITERATION',
                  'OBJECTIVE', 'SOLUTION']]
 
-            print('Current objective {}'.format(str(objective)))
-            print('Prev objective {}'.format(str(prev_objective)))
+            #'Current objective {}'.format(str(objective))
+            #'Prev objective {}'.format(str(prev_objective))
 
             if abs(objective - prev_objective) < objective_range:
-                print('Solution found')
+                #'Solution found'
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
 
             elif (prev_objective < objective) and iteration > maximum_iteration:
-                print('Stopping')
+                #'Stopping'
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
 

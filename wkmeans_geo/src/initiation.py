@@ -2,7 +2,12 @@ from src import clusters as cl
 
 
 def randomly_assign_clusters(number_of_clusters, input_locations):
-
+    '''
+    Randomly assign locations to clusters
+    :param number_of_clusters:
+    :param input_locations:
+    :return:
+    '''
     # randomly assign customers to K clusters
     clusters = list(range(0, number_of_clusters)) * round(
         len(input_locations) / number_of_clusters + 1)
@@ -17,6 +22,12 @@ def randomly_assign_clusters(number_of_clusters, input_locations):
 
 def initiate_algorithm(iteration,
                        locations_with_clusters):
+    '''
+    Initiatie the algorithm
+    :param iteration:
+    :param locations_with_clusters:
+    :return:
+    '''
 
     clusters = cl.calculate_cluster_centers(locations_with_clusters)
 

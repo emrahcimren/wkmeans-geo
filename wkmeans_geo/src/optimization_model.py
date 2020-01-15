@@ -8,8 +8,11 @@ from ortools.linear_solver import pywraplp
 
 
 def prepare_model_inputs(location_cluster_distance_matrix):
-
-    print('Getting model inputs')
+    '''
+    Run the optimization model
+    :param location_cluster_distance_matrix:
+    :return:
+    '''
 
     DistanceInputs = collections.namedtuple('DistanceInputs', ['DISTANCE', 'WEIGHTED_DISTANCE'])
     distance = {}
@@ -33,47 +36,45 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
                                       minimum_elements_in_a_cluster,
                                       maximum_elements_in_a_cluster,
                                       enable_minimum_maximum_elements_in_a_cluster):
-
-    print('Formulating the optimization model')
+    '''
+    Formulate the model
+    :param store_list:
+    :param cluster_list:
+    :param distance:
+    :param minimum_elements_in_a_cluster:
+    :param maximum_elements_in_a_cluster:
+    :param enable_minimum_maximum_elements_in_a_cluster:
+    :return:
+    '''
 
     # formulate model
     solver = pywraplp.Solver('SolveIntegerProblem', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     # create variables #
-    print('create variables')
     y = {}
     for cluster, store in distance.keys():
         y[cluster, store] = solver.BoolVar('y[cluster = {}, {}]'.format(str(cluster), store))
 
     # Add constraints
-    print('each store is assigned to one cluster')
     # each store is assigned to one cluster
     for store in store_list:
         solver.Add(solver.Sum([y[cluster, store] for cluster in cluster_list]) == 1)
 
     if enable_minimum_maximum_elements_in_a_cluster:
-
-        print('minimum number of elements in a cluster')
-
         # minimum number of elements in a cluster
         for cluster in cluster_list:
             solver.Add(solver.Sum([y[cluster, store] for store in store_list]) >= minimum_elements_in_a_cluster)
-
-        print('maximum number of elements in a cluster')
 
         # maximum number of elements in a cluster
         for cluster in cluster_list:
             solver.Add(solver.Sum([y[cluster, store] for store in store_list]) <= maximum_elements_in_a_cluster)
     else:
 
-        print('minimum number of elements in a cluster >= 1')
-
         # minimum number of elements in a cluster
         for cluster in cluster_list:
             solver.Add(solver.Sum([y[cluster, store] for store in store_list]) >= 1)
 
     # add objective
-    print('Adding objective')
     solver.Minimize(solver.Sum(
         [distance[cluster, store].WEIGHTED_DISTANCE * y[cluster, store] for cluster, store in
          distance.keys()]))
@@ -85,16 +86,15 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
 
     solver.EnableOutput()
 
-    print('Solving model')
     solution = solver.Solve()
 
     # get solution
     if solution == pywraplp.Solver.OPTIMAL:
-        print('Problem solved in {} milliseconds'.format(str(solver.WallTime())))
-        print('Problem solved in {} iterations'.format(str(solver.Iterations())))
+
+        #'Problem solved in {} milliseconds'.format(str(solver.WallTime())))
+        #Problem solved in {} iterations'.format(str(solver.Iterations())))
 
         solution_final = []
-        print('Getting solutions')
         for cluster, store in distance.keys():
             solution_final.append({'CLUSTER': cluster,
                                    'LOCATION_NAME': store,
@@ -108,7 +108,6 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
         solution = solution[['CLUSTER', 'LOCATION_NAME', 'DISTANCE', 'WEIGHTED_DISTANCE']]
 
     else:
-        print('No solution is found')
         solution = pd.DataFrame()
 
     return solution
