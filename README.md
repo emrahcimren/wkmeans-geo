@@ -1,7 +1,26 @@
 **Weighted KMeans Clustering for Geolocational Problem**
 =================
 
+Prerequisites
+-------------
 
+Install environment.yml for prerequisites.
+
+```
+conda env create -f environment.yml
+```
+
+To recreate environment.yml
+
+```
+conda env export > environment.yml
+```
+
+To create requirements.txt from environment.yml
+
+```
+conda list -e > requirements.txt
+```
 
 Installation
 ------------

@@ -3,16 +3,6 @@ from src import clusters as cl
 from src import initiation as init
 from src import optimization_model as ort
 
-input_locations = pd.read_csv('./test/data.csv')
-#input_locations = pd.read_csv('./test/data_with_clusters.csv')
-number_of_clusters = 100
-minimum_elements_in_a_cluster = 0
-maximum_elements_in_a_cluster = 50
-maximum_iteration=100
-objective_range=0.001
-use_given_clusters=False
-enable_minimum_maximum_elements_in_a_cluster=True
-
 
 def calculate_clusters(input_locations,
                        number_of_clusters,
@@ -20,6 +10,7 @@ def calculate_clusters(input_locations,
                        maximum_elements_in_a_cluster,
                        maximum_iteration,
                        objective_range,
+                       enable_minimum_maximum_elements_in_a_cluster,
                        previous_objective=None):
 
     iteration = 0

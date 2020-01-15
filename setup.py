@@ -1,9 +1,13 @@
 import pathlib
 from setuptools import setup
 
-from pip.req import parse_requirements
+def parse_requirements(filename):
+    """ load requirements from a pip requirements file """
+    lineiter = (line.strip() for line in open(filename))
+    return [line for line in lineiter if line and not line.startswith("#")]
+
 install_reqs = parse_requirements('requirements.txt')
-reqs = [str(ir.req) for ir in install_reqs]
+reqs = install_reqs
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
