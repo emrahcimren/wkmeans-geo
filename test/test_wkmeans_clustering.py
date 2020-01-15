@@ -6,7 +6,7 @@ import unittest
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), './wkmeans_geo')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../wkmeans_geo')))
 from wkmeans_geo import wkmeans_clustering as wkc
 from wkmeans_geo.src import data as test_data
 
