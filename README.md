@@ -25,7 +25,7 @@ conda env export > environment.yml
 To create requirements.txt from environment.yml
 
 ```
-conda list -e > requirements.txt
+pip freeze > requirements.txt
 ```
 
 Installation
