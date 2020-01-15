@@ -32,7 +32,7 @@ setup(
     url="https://github.com/emrahcimren/wkmeans-geo",
     author="cimren",
     author_email="cimren.1@gmail.com",
-    license="MIT",
+    license='LICENSE.txt',
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.6",
