@@ -1,7 +1,12 @@
+import os
+import sys
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '/src')))
+#sys.path.append('src')
+
 import pandas as pd
-from src import clusters as cl
-from src import initiation as init
-from src import optimization_model as ort
+from wkmeans_geo.src import clusters as cl
+from wkmeans_geo.src import initiation as init
+from wkmeans_geo.src import optimization_model as ort
 
 
 def calculate_clusters(input_locations,

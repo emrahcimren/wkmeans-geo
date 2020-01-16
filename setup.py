@@ -1,5 +1,5 @@
 import pathlib
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def parse_requirements(filename):
@@ -25,7 +25,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="cimren-wkmeans-geo",
-    version="1.0.2",
+    version="1.0.8",
     description="Weighted KMeans Clustering for Geolocational Problem",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -38,7 +38,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
     ],
-    packages=["wkmeans_geo"],
+    packages=["wkmeans_geo", "wkmeans_geo/src"],
     include_package_data=True,
     install_requires=reqs,
     #entry_points={

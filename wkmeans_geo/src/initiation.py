@@ -1,4 +1,4 @@
-from src import clusters as cl
+from wkmeans_geo.src import clusters as cl
 
 
 def randomly_assign_clusters(number_of_clusters, input_locations):
