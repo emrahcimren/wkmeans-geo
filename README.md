@@ -56,6 +56,15 @@ LOC 0 | -27.0065 | 170.583 | 1
 
 *objective_range*: Acceptable difference between objectives at each iteration
 
+Data
+----
+Package has a sample data set
+
+```
+from wkmeans_geo.src import data
+data.
+```
+
 How to use
 ----------
 
