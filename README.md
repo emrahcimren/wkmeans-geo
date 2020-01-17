@@ -62,7 +62,13 @@ Package has a sample data set
 
 ```
 from wkmeans_geo.src import data
-data.
+data.locations_test
+data.number_of_clusters
+data.minimum_elements_in_a_cluster
+data.maximum_elements_in_a_cluster
+data.maximum_iteration
+data.enable_minimum_maximum_elements_in_a_cluster
+data.objective_range
 ```
 
 How to use
