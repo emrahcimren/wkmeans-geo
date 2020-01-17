@@ -15,8 +15,7 @@ def calculate_clusters(input_locations,
                        maximum_elements_in_a_cluster,
                        maximum_iteration,
                        objective_range,
-                       enable_minimum_maximum_elements_in_a_cluster,
-                       previous_objective=None):
+                       enable_minimum_maximum_elements_in_a_cluster):
     '''
     Run WKmens clustering
     :param input_locations:
@@ -42,9 +41,6 @@ def calculate_clusters(input_locations,
 
     prev_objective, prev_clusters, prev_locations_with_clusters = \
         init.initiate_algorithm(iteration, locations_with_clusters)
-
-    if previous_objective is not None:
-        prev_objective = previous_objective
 
     all_clusters.append(prev_clusters)
     all_stores_with_clusters.append(prev_locations_with_clusters)
