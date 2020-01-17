@@ -56,21 +56,25 @@ LOC 0 | -27.0065 | 170.583 | 1
 
 *objective_range*: Acceptable difference between objectives at each iteration
 
+Data
+----
+Package has a sample data set
+
+```
+from wkmeans_geo.src import data
+data.locations_test
+data.number_of_clusters
+data.minimum_elements_in_a_cluster
+data.maximum_elements_in_a_cluster
+data.maximum_iteration
+data.enable_minimum_maximum_elements_in_a_cluster
+data.objective_range
+```
+
 How to use
 ----------
-
-Create initial clusters from a given solution.
-- Number of clusters to be generated should be bigger than number of clusters in the input solution
-
-```
-from wkmeans_geo import clusters_from_input as cf
-initial_solution = cf.create_initial_clusters_from_given_input(number_of_clusters, input_locations_with_clusters)
-```
-
-Create clusters.
 
 ```
 from wkmeans_geo import wkmeans_clustering as wkc
 clusters, locations_with_clusters = wkc.calculate_clusters(...)
 ```
-
