@@ -32,7 +32,6 @@ def prepare_model_inputs(location_cluster_distance_matrix):
     volume_input = location_cluster_distance_matrix[['LOCATION_NAME', 'VOLUME']].drop_duplicates()
     volume = {}
     for _, row in volume_input.iterrows():
-        print(row)
         volume[row.LOCATION_NAME] = row.VOLUME
 
     return location_list, cluster_list, distance, volume
