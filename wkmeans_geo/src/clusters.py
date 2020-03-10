@@ -55,4 +55,4 @@ def calculate_distance_matrix(locations_at_iteration, clusters_for_distance):
     locations_at_iteration_with_clusters = locations_at_iteration.merge(clusters_for_distance)
     locations_at_iteration_with_clusters = calculate_weighted_distance(locations_at_iteration_with_clusters)
 
-    return locations_at_iteration_with_clusters [['LOCATION_NAME', 'CLUSTER', 'DISTANCE', 'WEIGHTED_DISTANCE']]
+    return locations_at_iteration_with_clusters [['LOCATION_NAME', 'CLUSTER', 'DISTANCE', 'WEIGHTED_DISTANCE', 'VOLUME']]
