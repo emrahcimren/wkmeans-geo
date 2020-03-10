@@ -13,6 +13,7 @@ def calculate_clusters(input_locations,
                        number_of_clusters,
                        minimum_elements_in_a_cluster,
                        maximum_elements_in_a_cluster,
+                       maximum_volume_in_a_cluster,
                        maximum_iteration,
                        objective_range,
                        enable_minimum_maximum_elements_in_a_cluster):
@@ -22,6 +23,7 @@ def calculate_clusters(input_locations,
     :param number_of_clusters:
     :param minimum_elements_in_a_cluster:
     :param maximum_elements_in_a_cluster:
+    :param maximum_volume_in_a_cluster:
     :param maximum_iteration:
     :param objective_range:
     :param enable_minimum_maximum_elements_in_a_cluster:
@@ -51,10 +53,14 @@ def calculate_clusters(input_locations,
 
         location_cluster_distance_matrix = cl.calculate_distance_matrix(input_locations.copy(), prev_clusters)
 
-        location_list, cluster_list, distance = ort.prepare_model_inputs(location_cluster_distance_matrix)
-        solution = ort.formulate_and_solve_ortools_model(location_list, cluster_list, distance,
+        location_list, cluster_list, distance, volume = ort.prepare_model_inputs(location_cluster_distance_matrix)
+        solution = ort.formulate_and_solve_ortools_model(location_list,
+                                                         cluster_list,
+                                                         distance,
+                                                         volume,
                                                          minimum_elements_in_a_cluster,
                                                          maximum_elements_in_a_cluster,
+                                                         maximum_volume_in_a_cluster,
                                                          enable_minimum_maximum_elements_in_a_cluster)
 
         if len(solution) > 0:
@@ -78,7 +84,7 @@ def calculate_clusters(input_locations,
             locations_with_clusters['SOLUTION'] = 0
 
             locations_with_clusters = locations_with_clusters[
-                ['LOCATION_NAME', 'LATITUDE', 'LONGITUDE', 'WEIGHT',
+                ['LOCATION_NAME', 'LATITUDE', 'LONGITUDE', 'WEIGHT', 'VOLUME',
                  'CLUSTER', 'CLUSTER_LATITUDE', 'CLUSTER_LONGITUDE',
                  'DISTANCE', 'WEIGHTED_DISTANCE', 'ITERATION',
                  'OBJECTIVE', 'SOLUTION']]

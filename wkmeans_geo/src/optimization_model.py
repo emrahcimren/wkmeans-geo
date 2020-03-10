@@ -29,20 +29,31 @@ def prepare_model_inputs(location_cluster_distance_matrix):
     location_list = list(dict.fromkeys(location_list))
     cluster_list = list(dict.fromkeys(cluster_list))
 
-    return location_list, cluster_list, distance
+    volume_input = location_cluster_distance_matrix[['LOCATION_NAME', 'VOLUME']].drop_duplicates()
+    volume = {}
+    for _, row in volume_input.iterrows():
+        volume[row.LOCATION_NAME] = row.VOLUME
+
+    return location_list, cluster_list, distance, volume
 
 
-def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
+def formulate_and_solve_ortools_model(store_list,
+                                      cluster_list,
+                                      distance,
+                                      volume,
                                       minimum_elements_in_a_cluster,
                                       maximum_elements_in_a_cluster,
+                                      maximum_volume_in_a_cluster,
                                       enable_minimum_maximum_elements_in_a_cluster):
     '''
     Formulate the model
     :param store_list:
     :param cluster_list:
     :param distance:
+    :param volume:
     :param minimum_elements_in_a_cluster:
     :param maximum_elements_in_a_cluster:
+    :param maximum_volume_in_a_cluster:
     :param enable_minimum_maximum_elements_in_a_cluster:
     :return:
     '''
@@ -74,6 +85,11 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
         for cluster in cluster_list:
             solver.Add(solver.Sum([y[cluster, store] for store in store_list]) >= 1)
 
+    if maximum_volume_in_a_cluster is not None:
+        for cluster in cluster_list:
+            solver.Add(
+                solver.Sum([volume[store] * y[cluster, store] for store in store_list]) <= maximum_volume_in_a_cluster)
+
     # add objective
     solver.Minimize(solver.Sum(
         [distance[cluster, store].WEIGHTED_DISTANCE * y[cluster, store] for cluster, store in
@@ -91,8 +107,8 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
     # get solution
     if solution == pywraplp.Solver.OPTIMAL:
 
-        #'Problem solved in {} milliseconds'.format(str(solver.WallTime())))
-        #Problem solved in {} iterations'.format(str(solver.Iterations())))
+        # 'Problem solved in {} milliseconds'.format(str(solver.WallTime())))
+        # Problem solved in {} iterations'.format(str(solver.Iterations())))
 
         solution_final = []
         for cluster, store in distance.keys():
@@ -100,7 +116,8 @@ def formulate_and_solve_ortools_model(store_list, cluster_list, distance,
                                    'LOCATION_NAME': store,
                                    'VALUE': y[cluster, store].solution_value(),
                                    'DISTANCE': distance[cluster, store].DISTANCE,
-                                   'WEIGHTED_DISTANCE': distance[cluster, store].WEIGHTED_DISTANCE})
+                                   'WEIGHTED_DISTANCE': distance[cluster, store].WEIGHTED_DISTANCE,
+                                   'VOLUME': volume[store]})
 
         solution = pd.DataFrame(solution_final)
 
