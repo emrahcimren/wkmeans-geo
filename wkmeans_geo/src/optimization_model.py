@@ -107,8 +107,9 @@ def formulate_and_solve_ortools_model(store_list,
     # get solution
     if solution == pywraplp.Solver.OPTIMAL:
 
-        # 'Problem solved in {} milliseconds'.format(str(solver.WallTime())))
-        # Problem solved in {} iterations'.format(str(solver.Iterations())))
+        print('Optimal solution is found')
+        print('Problem solved in {} milliseconds'.format(str(solver.WallTime())))
+        print('Problem solved in {} iterations'.format(str(solver.Iterations())))
 
         solution_final = []
         for cluster, store in distance.keys():

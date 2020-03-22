@@ -32,10 +32,14 @@ def calculate_clusters(input_locations,
     '''
 
     iteration = 0
+
+    print('Running for iteration {}'.format(str(iteration)))
+
     all_clusters = []
     all_stores_with_clusters = []
 
     if 'CLUSTER' not in input_locations.columns:
+        print('Randomly assigning clusters')
         locations_with_clusters = init.randomly_assign_clusters(number_of_clusters, input_locations)
     else:
         locations_with_clusters = input_locations.copy()
@@ -49,11 +53,16 @@ def calculate_clusters(input_locations,
 
     solution_not_found = True
     while solution_not_found:
-        #'Running iteration {}'.format(str(iteration)
 
+        print('Running iteration {}'.format(str(iteration)))
+
+        print('Calculating distance matrix')
         location_cluster_distance_matrix = cl.calculate_distance_matrix(input_locations.copy(), prev_clusters)
 
+        print('Preparing model inputs')
         location_list, cluster_list, distance, volume = ort.prepare_model_inputs(location_cluster_distance_matrix)
+
+        print('Running the model')
         solution = ort.formulate_and_solve_ortools_model(location_list,
                                                          cluster_list,
                                                          distance,
@@ -64,8 +73,6 @@ def calculate_clusters(input_locations,
                                                          enable_minimum_maximum_elements_in_a_cluster)
 
         if len(solution) > 0:
-
-            #Optimal solution is found'
 
             iteration = iteration + 1
             solution['ITERATION'] = iteration
@@ -89,16 +96,16 @@ def calculate_clusters(input_locations,
                  'DISTANCE', 'WEIGHTED_DISTANCE', 'ITERATION',
                  'OBJECTIVE', 'SOLUTION']]
 
-            #'Current objective {}'.format(str(objective))
-            #'Prev objective {}'.format(str(prev_objective))
+            print('Current objective {}'.format(str(objective)))
+            print('Previous objective {}'.format(str(prev_objective)))
 
             if abs(objective - prev_objective) < objective_range:
-                #'Solution found'
+                print('Solution found')
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
 
             elif (prev_objective < objective) and iteration > maximum_iteration:
-                #'Stopping'
+                print('Stopping since maximum iterations is reached')
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
 
