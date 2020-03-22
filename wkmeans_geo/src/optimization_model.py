@@ -44,7 +44,9 @@ def formulate_and_solve_ortools_model(store_list,
                                       minimum_elements_in_a_cluster,
                                       maximum_elements_in_a_cluster,
                                       maximum_volume_in_a_cluster,
-                                      enable_minimum_maximum_elements_in_a_cluster):
+                                      enable_minimum_maximum_elements_in_a_cluster,
+                                      relative_mip_gap=0.05,
+                                      solver_time_limit_mins=10):
     '''
     Formulate the model
     :param store_list:
@@ -55,11 +57,13 @@ def formulate_and_solve_ortools_model(store_list,
     :param maximum_elements_in_a_cluster:
     :param maximum_volume_in_a_cluster:
     :param enable_minimum_maximum_elements_in_a_cluster:
+    :param relative_mip_gap
     :return:
     '''
 
     # formulate model
     solver = pywraplp.Solver('SolveIntegerProblem', pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+    #solver = pywraplp.Solver('SolveIntegerProblem', pywraplp.Solver.BOP_INTEGER_PROGRAMMING)
 
     # create variables #
     y = {}
@@ -69,7 +73,7 @@ def formulate_and_solve_ortools_model(store_list,
     # Add constraints
     # each store is assigned to one cluster
     for store in store_list:
-        solver.Add(solver.Sum([y[cluster, store] for cluster in cluster_list]) == 1)
+        solver.Add(sum([y[cluster, store] for cluster in cluster_list]) == 1)
 
     if enable_minimum_maximum_elements_in_a_cluster:
         # minimum number of elements in a cluster
@@ -88,7 +92,7 @@ def formulate_and_solve_ortools_model(store_list,
     if maximum_volume_in_a_cluster is not None:
         for cluster in cluster_list:
             solver.Add(
-                solver.Sum([volume[store] * y[cluster, store] for store in store_list]) <= maximum_volume_in_a_cluster)
+                sum([volume[store] * y[cluster, store] for store in store_list]) <= maximum_volume_in_a_cluster)
 
     # add objective
     solver.Minimize(solver.Sum(
@@ -97,8 +101,8 @@ def formulate_and_solve_ortools_model(store_list,
 
     # solver.Minimize(1)
     solver_parameters = pywraplp.MPSolverParameters()
-    solver_parameters.SetDoubleParam(pywraplp.MPSolverParameters.RELATIVE_MIP_GAP, 0.01)
-    # solver.SetTimeLimit(self.solver_time_limit)
+    solver_parameters.SetDoubleParam(pywraplp.MPSolverParameters.RELATIVE_MIP_GAP, relative_mip_gap)
+    solver.SetTimeLimit(solver_time_limit_mins*60*1000)
 
     solver.EnableOutput()
 

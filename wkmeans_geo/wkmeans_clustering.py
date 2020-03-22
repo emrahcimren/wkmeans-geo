@@ -15,8 +15,11 @@ def calculate_clusters(input_locations,
                        maximum_elements_in_a_cluster,
                        maximum_volume_in_a_cluster,
                        maximum_iteration,
+                       enable_minimum_maximum_elements_in_a_cluster,
                        objective_range,
-                       enable_minimum_maximum_elements_in_a_cluster):
+                       relative_mip_gap=0.05,
+                       solver_time_limit_mins=10
+                       ):
     '''
     Run WKmens clustering
     :param input_locations:
@@ -70,7 +73,10 @@ def calculate_clusters(input_locations,
                                                          minimum_elements_in_a_cluster,
                                                          maximum_elements_in_a_cluster,
                                                          maximum_volume_in_a_cluster,
-                                                         enable_minimum_maximum_elements_in_a_cluster)
+                                                         enable_minimum_maximum_elements_in_a_cluster,
+                                                         relative_mip_gap,
+                                                         solver_time_limit_mins
+                                                         )
 
         if len(solution) > 0:
 
