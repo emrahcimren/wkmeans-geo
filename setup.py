@@ -25,7 +25,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="cimren-wkmeans-geo",
-    version="1.3.3",
+    version="1.3.4",
     description="Weighted KMeans Clustering for Geolocational Problem",
     long_description=README,
     long_description_content_type="text/markdown",

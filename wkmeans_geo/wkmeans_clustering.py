@@ -99,12 +99,12 @@ def calculate_clusters(input_locations,
             print('Current objective {}'.format(str(objective)))
             print('Previous objective {}'.format(str(prev_objective)))
 
-            if abs(objective - prev_objective) < objective_range:
+            if abs(objective - prev_objective) <= objective_range:
                 print('Solution found')
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
 
-            elif (prev_objective < objective) and iteration > maximum_iteration:
+            elif (prev_objective <= objective) and iteration > maximum_iteration:
                 print('Stopping since maximum iterations is reached')
                 solution_not_found = False
                 prev_locations_with_clusters['SOLUTION'] = 1
