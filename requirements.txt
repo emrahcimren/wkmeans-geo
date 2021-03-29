@@ -19,7 +19,7 @@ pathlib==1.0.1
 pkginfo==1.5.0.1
 plotly==4.4.1
 protobuf==3.11.2
-Pygments==2.5.2
+Pygments==2.7.4
 python-dateutil==2.8.1
 pytz==2019.3
 pywin32-ctypes==0.2.0
