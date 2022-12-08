@@ -1,6 +1,6 @@
 bleach==3.1.0
 bumpversion==0.5.3
-certifi==2019.11.28
+certifi==2022.12.7
 chardet==3.0.4
 cimren-helpers==1.0.3
 docutils==0.16
